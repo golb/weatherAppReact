@@ -54,7 +54,7 @@ function Weather() {
                 </div>
             )}
 
-            {error || !loading && (
+            {(error || !loading) && (
                 <div>
                     <input type="text" value={inputCity} onChange={(e) => handleCity(e)} />
                     <button onClick={() => queryWeather()}>
