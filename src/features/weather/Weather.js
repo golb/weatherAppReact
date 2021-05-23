@@ -1,51 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { useAxiosHook } from '../axios/axiosHook';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeCity, fetchWeather, weatherSelector } from './weatherSlice';
 
 function Weather() {
-    const defaultCity = 'Krasnodar';
-    const data = 'weather'; // TODO Rename it
+    const {
+        city,
+        loading,
+        error,
+        weather,
+        weatherIcon,
+        weatherDescription
+    } = useSelector(weatherSelector);
 
-    const [city, setCity] = useState(defaultCity);
-    const [weatherData, setWeatherData] = useState(data);
+    const dispatch = useDispatch();
 
-    const {loading: loadingWeather, response: weather, error} = useAxiosHook({
-        city: city,
-        data: data
-    });
-
-    const makeFirstLetterUppercase = (str) => {
-        const upperCased = str.charAt(0).toUpperCase() + str.slice(1);
-        setWeatherData(upperCased);
+    const handleCity = () => {
+        dispatch(changeCity('moscow'));
+        dispatch(fetchWeather({
+            weatherType: 'weather',
+            q: 'moscow',
+        }));
     };
 
-    const changeCity = () => { // TODO change to input field
-        setCity('Moscow');
-    }
-
     useEffect(() => {
-        makeFirstLetterUppercase(data);
-    }, [weather]);
+        dispatch(fetchWeather());
+    }, [dispatch]);
 
     return (
         <>
-            <button onClick={() => changeCity()}>
-                Change City
-            </button>
+            {error ? (
+                <div>
+                    <p>Oops! {error.message}</p>
 
-            {loadingWeather ? (
-                <div>Loading {data} for {city}...</div>
+                    <button onClick={() => handleCity()}>
+                        Try to Change City on Moscow
+                    </button>
+                </div>
             ) : (
                 <div>
-                    {error && (
-                        <p>Oops! {error.message}</p>
+                    {loading && (
+                        <div>Loading Weather in {city}...</div>
                     )}
-                    {weather && (
-                        <>
-                            <h2>{weatherData} for {weather.name}</h2>
-                            <h3>{weather.weather[0].main}</h3>
-                            <img src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt={weather.weather[0].main} />
-                            <p>{weather.weather[0].description}</p>
-                        </>
+                    {!loading && (
+                        <div>
+                            <h2>Weather in {city}</h2>
+                            <h3>{weather}</h3>
+                            <img src={`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`} alt={weather} />
+                            <p>{weatherDescription}</p>
+
+                            <button onClick={() => handleCity()}>
+                                Or Change City on Moscow
+                            </button>
+                        </div>
                     )}
                 </div>
             )}
