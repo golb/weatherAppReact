@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeCity, fetchWeather, weatherSelector } from './weatherSlice';
+import { useStorage } from '../lstorage/storageController';
 
 function Weather() {
     const {
@@ -12,15 +13,20 @@ function Weather() {
         weatherDescription
     } = useSelector(weatherSelector);
 
+    const [inputCity, setInputCity] = useState('');
+
     const dispatch = useDispatch();
 
-    const handleCity = () => {
-        dispatch(changeCity('moscow'));
-        dispatch(fetchWeather({
-            weatherType: 'weather',
-            q: 'moscow',
-        }));
+    const handleCity = (e) => {
+        const city = e.target.value;
+        setInputCity(city);
     };
+
+    const queryWeather = () => {
+        dispatch(changeCity(inputCity));
+    };
+
+    useStorage();
 
     useEffect(() => {
         dispatch(fetchWeather());
@@ -31,15 +37,11 @@ function Weather() {
             {error ? (
                 <div>
                     <p>Oops! {error.message}</p>
-
-                    <button onClick={() => handleCity()}>
-                        Try to Change City on Moscow
-                    </button>
                 </div>
             ) : (
                 <div>
                     {loading && (
-                        <div>Loading Weather in {city}...</div>
+                        <div>Loading Weather in {city ? city : 'Your Location by Geo Position'}...</div>
                     )}
                     {!loading && (
                         <div>
@@ -47,12 +49,17 @@ function Weather() {
                             <h3>{weather}</h3>
                             <img src={`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`} alt={weather} />
                             <p>{weatherDescription}</p>
-
-                            <button onClick={() => handleCity()}>
-                                Or Change City on Moscow
-                            </button>
                         </div>
                     )}
+                </div>
+            )}
+
+            {error || !loading && (
+                <div>
+                    <input type="text" value={inputCity} onChange={(e) => handleCity(e)} />
+                    <button onClick={() => queryWeather()}>
+                        Get Weather
+                    </button>
                 </div>
             )}
         </>

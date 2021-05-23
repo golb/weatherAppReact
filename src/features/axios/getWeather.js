@@ -9,12 +9,7 @@ export const getWeather = async (params) => {
     params.appid = API_KEY;
     try {
         const response = await axios.get(`/${API_VERSION}/${params.weatherType}`, {
-            params: params/* {
-                appid: API_KEY,
-                //q: queryParams.city,
-                lat: params.latitude,
-                lon: params.longitude
-            } */
+            params: params
         });
         return response;
     } catch (err) {

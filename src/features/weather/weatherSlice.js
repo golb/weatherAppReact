@@ -4,8 +4,8 @@ import { getCoords } from "../geo/getCoords";
 
 const initialState = {
     loading: true,
-    error: '',
-    city: 'Your Location by Geo Position',
+    error: null,
+    city: '',
     latitude: undefined,
     longitude: undefined,
     weather: undefined,
@@ -46,6 +46,15 @@ export const weatherSlice = createSlice({
         setLongitude(state, action) {
             state.longitude = action.payload
         },
+        setDataFromLocalStorage(state, action) {
+            state.city = action.payload.city;
+            state.loading = action.payload.loading;
+            state.error = action.payload.error;
+            state.city = action.payload.city;
+            state.weather = action.payload.weather;
+            state.weatherIcon = action.payload.weatherIcon
+            state.weatherDescription = action.payload.weatherDescription;
+        },
     },
     extraReducers: {
         [fetchWeather.pending]: (state, action) => {
@@ -60,14 +69,14 @@ export const weatherSlice = createSlice({
             state.weatherDescription = weatherData.weather[0].description;
         },
         [fetchWeather.rejected]: (state, action) => {
-            console.log('action error', action);
+            console.log('action error', action); // todo
             state.loading = false;
             state.error = action.payload;
         },
     },
 });
 
-export const { changeCity, setLoading, setError, setLatitude, setLongitude } = weatherSlice.actions;
+export const { changeCity, setLoading, setError, setLatitude, setLongitude, setDataFromLocalStorage } = weatherSlice.actions;
 
 export const weatherSelector = (state) => state.weather;
 
