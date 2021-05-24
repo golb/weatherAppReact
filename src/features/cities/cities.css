@@ -1,0 +1,28 @@
+.cities {
+    display: flex;
+    padding: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: space-between;
+}
+
+.city {
+    margin: 0 5px;
+    padding: 10px;
+    border: 1px solid #000;
+    cursor: pointer;
+    position: relative;
+}
+
+.city span {
+    font-size: 12px;
+    position: absolute;
+    top: -8px;
+    right: 0px;
+    background-color: #fff;
+    width: 14px;
+    height: 15px;
+    cursor: pointer;
+    color: red;
+}

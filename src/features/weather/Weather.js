@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeCity, fetchWeather, weatherSelector } from './weatherSlice';
 import { useStorage } from '../lstorage/storageController';
+import Cities from '../cities/Cities';
+import './weather.css';
 
 function Weather() {
     const {
@@ -10,10 +12,12 @@ function Weather() {
         error,
         weather,
         weatherIcon,
-        weatherDescription
+        weatherDescription,
+        savedCities
     } = useSelector(weatherSelector);
 
     const [inputCity, setInputCity] = useState('');
+    const [removedCity, setRemovedCity] = useState('');
 
     const dispatch = useDispatch();
 
@@ -22,11 +26,18 @@ function Weather() {
         setInputCity(city);
     };
 
-    const queryWeather = () => {
-        dispatch(changeCity(inputCity));
+    const queryWeather = (city) => {
+        if (!city) {
+            city = inputCity;
+        }
+        dispatch(changeCity(city));
     };
 
-    useStorage();
+    const removeCity = (city) => {
+        setRemovedCity(city);
+    }
+
+    useStorage(removedCity);
 
     useEffect(() => {
         dispatch(fetchWeather());
@@ -44,7 +55,7 @@ function Weather() {
                         <div>Loading Weather in {city ? city : 'Your Location by Geo Position'}...</div>
                     )}
                     {!loading && (
-                        <div>
+                        <div className="card">
                             <h2>Weather in {city}</h2>
                             <h3>{weather}</h3>
                             <img src={`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`} alt={weather} />
@@ -55,12 +66,20 @@ function Weather() {
             )}
 
             {(error || !loading) && (
-                <div>
+                <div className="city-input-wrapper">
+                    <h4>Or get it in other city:</h4>
                     <input type="text" value={inputCity} onChange={(e) => handleCity(e)} />
-                    <button onClick={() => queryWeather()}>
+                    <button onClick={() => queryWeather()} >
                         Get Weather
                     </button>
                 </div>
+            )}
+
+            {savedCities && (
+                <Cities
+                    cities={savedCities}
+                    onChooseCity={queryWeather}
+                    onRemoveCity={removeCity} />
             )}
         </>
     );

@@ -11,6 +11,7 @@ const initialState = {
     weather: undefined,
     weatherIcon: undefined,
     weatherDescription: '',
+    savedCities: [],
 };
 
 export const fetchWeather = createAsyncThunk('fetchWeather', async (fetchParams) => {
@@ -55,6 +56,9 @@ export const weatherSlice = createSlice({
             state.weatherIcon = action.payload.weatherIcon
             state.weatherDescription = action.payload.weatherDescription;
         },
+        setSavedCities(state, action) {
+            state.savedCities = action.payload
+        },
     },
     extraReducers: {
         [fetchWeather.pending]: (state, action) => {
@@ -69,14 +73,14 @@ export const weatherSlice = createSlice({
             state.weatherDescription = weatherData.weather[0].description;
         },
         [fetchWeather.rejected]: (state, action) => {
-            console.log('action error', action); // todo
+            console.log('action error', action); // todo checking error obj
             state.loading = false;
             state.error = action.payload;
         },
     },
 });
 
-export const { changeCity, setLoading, setError, setLatitude, setLongitude, setDataFromLocalStorage } = weatherSlice.actions;
+export const { changeCity, setLoading, setError, setLatitude, setLongitude, setDataFromLocalStorage, setSavedCities } = weatherSlice.actions;
 
 export const weatherSelector = (state) => state.weather;
 

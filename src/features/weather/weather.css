@@ -1,0 +1,31 @@
+.card {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+button {
+    background-color: #ccc;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+input {
+    background-color: #fff;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 15px;
+    margin-right: 12px;
+    vertical-align: bottom;
+    min-width: 250px;
+}
+
+.city-input-wrapper {
+    padding-bottom: 40px;
+    vertical-align: baseline;
+}
